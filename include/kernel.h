@@ -3,12 +3,16 @@
 
 #include <mibstd.h>
 
-extern d_u_int *vga_buffer;
-extern void vga_clear_buffer();
+#ifndef TTY_H
+#include <tty.h>
+#endif
 
-extern d_u_int tty_cursor;
-extern void add_string();
+#ifndef VGA_H
+#include <vga.h>
+#endif
 
-extern void os_entry();
-extern void new_line();
+void io_sleep(int);
+
+void *memset(void*, d_u_int, d_u_int);
+
 #endif

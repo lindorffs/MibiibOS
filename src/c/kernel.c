@@ -1,26 +1,51 @@
 #include <kernel.h>
-#include <keyboard.h>
 
-u_int inb(d_u_int port)
+/*
+ *
+ * KERNEL CORE FUNCTIONALITY
+ *
+ */
+
+u_int in_byte(d_u_int port)
 {
   u_int ret;
   asm volatile("inb %1, %0" : "=a"(ret) : "d"(port));
   return ret;
 }
 
-void outb(d_u_int port, u_int data)
+void out_byte(d_u_int port, u_int data)
 {
   asm volatile("outb %0, %1" : "=a"(data) : "d"(port));
 }
 
-char get_input_keycode()
-{
-  char ch = 0;
-  while((ch = inb(KEYBOARD_PORT)) != 0){
-    if(ch > 0)
-      return ch;
-  }
-  return ch;
+
+int memcmp(const void *a_ext, const void *b_ext, d_u_int size) {
+	const unsigned char *a_int = (const unsigned char*) a_ext;
+	const unsigned char *b_int = (const unsigned char*) b_ext;
+	for (d_u_int i = 0; i < size; i++) {
+		if (a_int[i] < b_int[i])
+			return -1;
+		else if (b_int[i] < a_int[i])
+			return 1;
+	}
+	return 0;
+}
+
+void *memset(void *set_ext, d_u_int value, d_u_int size) {
+	unsigned char *buffer = (unsigned char*) set_ext;
+	for (d_u_int i = 0; i < size; i++) {
+		buffer[i] = (unsigned char) value;
+	}
+	return  set_ext;
+}
+
+void *memcpy(void* restrict destination, const void* restrict source, d_u_int size) {
+	unsigned char* destination_internal = (unsigned char*) destination;
+	const unsigned char* source_internal = (const unsigned char*) source;
+	for (d_u_int i = 0; i < size; i++) {
+		destination_internal[i] = source_internal[i];
+	}
+	return destination;
 }
 
 /*
@@ -38,18 +63,17 @@ void wait_for_io(q_u_int timer_count)
     }
 }
 
-void sleep(u_int timer_count)
+void io_sleep(int timer_count)
 {
   wait_for_io(timer_count);
 }
 
 void panic(char *str) {
-	vga_clear_buffer(&vga_buffer);
-	tty_cursor = 0;
+	vga_clear_buffer();
+	tty_init();
 	add_string("!!! KERNEL PANIC: ");
 	add_string(str);
-	add_string(" !!!");
-	new_line();
+	add_string(" !!!\n");
 	add_string("Please view the relevant documentation at: http://0.0.0.0/0/1");
 	while (1) {
 
@@ -58,16 +82,11 @@ void panic(char *str) {
 
 void kernel_entry()
 {
-  vga_buffer = (d_u_int*)0xB8000;
-  vga_clear_buffer(&vga_buffer);
-
-  add_string("MibiibKern V0.0.3 -- Initializng");
-  new_line();
-
-
-  add_string("[!] Kernel handing off to OS.\n");
-  add_string("[!] Exiting kSpace.\n");
+  vga_clear_buffer();
+  tty_init();
+  add_string("[k] MibiibKern V0.0.1 -- Initializng\n");
+  add_string("[k] Exiting kSpace.\n");
   os_entry();  
-  vga_clear_buffer(&vga_buffer);
+  vga_clear_buffer();
   return;
 }

@@ -16,11 +16,11 @@ d_u_int vga_mem(unsigned char ch, u_int fore_color, u_int back_color)
   return ax;
 }
 
-void vga_clear_buffer(d_u_int **buffer)
+void vga_clear_buffer()
 {
   q_u_int i;
   for(i = 0; i < VGA_BUFFER_SIZE; i++){
-    (*buffer)[i] = vga_mem(NULL, WHITE, DARK_GREY);
+	  ((d_u_int*)0xB8000)[i] = vga_mem(NULL, WHITE, DARK_GREY);
   }
 }
 
