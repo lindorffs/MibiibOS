@@ -4,6 +4,8 @@
 
 A BIOS Capable, extremely lightweight and featureless, kernel and *operating system* designed as a basis for reserach into operating system and kernel development. Uses the GRUB Multiboot standard to load the kernel, which then calls os_entry() from kernel_entry()
 
+Based on Pritam Zopes tutorial: https://www.codeproject.com/Articles/1225196/Create-Your-Own-Kernel-In-C-2
+
 ## Dependencies
 
 GNU Assembler V2.39
