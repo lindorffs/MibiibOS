@@ -1,8 +1,8 @@
 # MibiibOS
 ## A research kernel and quasi-operating system
-### WARNING: EXPERIMENTAL AT BEST. DANGEROUS AT WORST.
+### WARNING: DANGEROUS AT BEST.
 
-A BIOS Capable, extremely lightweight and featureless, kernel and *operating system* designed as a basis for reserach into operating system and kernel development. Uses the GRUB Multiboot standard to load the kernel, which then calls os_entry() from kernel_entry()
+A BIOS Capable, extremely lightweight and semi-featureless, kernel, operating system and shell designed as a basis for reserach into operating system and kernel development. Does a lot of things wrong. Probably all of them.
 
 Based on Pritam Zopes tutorial: https://www.codeproject.com/Articles/1225196/Create-Your-Own-Kernel-In-C-2
 
