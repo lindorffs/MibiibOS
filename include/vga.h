@@ -26,7 +26,8 @@ enum vga_color {
 	WHITE,
 };
 
-void vga_clear_buffer();
+void vga_clear_buffer(u_int color);
+void vga_set_mem(q_u_int mem_pos, d_u_int vga_mem);
 d_u_int vga_mem(unsigned char ch, u_int foreground, u_int background);
 
 #endif

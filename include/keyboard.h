@@ -85,6 +85,10 @@
 #define KEY_TAB 0x0F
 #define KEY_UP 0x48
 
-char get_input_keycode();
+char get_input_keycode(void);
+
+char *get_input(void);
+
+char keycode_to_char(char);
 
 #endif

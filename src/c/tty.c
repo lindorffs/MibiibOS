@@ -2,10 +2,16 @@
 
 #include <vga.h>
 
-d_u_int tty_cursor;
+q_u_int tty_cursor;
 
-void tty_init() {
+u_int foreground_color;
+u_int background_color;
+
+void tty_init(u_int fore, u_int back) {
 	tty_cursor = 0;
+	foreground_color = fore;
+	background_color = back;
+	vga_clear_buffer(background_color);
 }
 
 void new_line() {
@@ -13,7 +19,7 @@ void new_line() {
 }
 
 void add_entry(unsigned char entry) {
-	((d_u_int*)0xB8000)[tty_cursor++] = vga_mem(entry, CYAN, DARK_GREY);
+	vga_set_mem(tty_cursor++, vga_mem(entry, foreground_color, background_color));
 }
 
 void add_string(char *string) {

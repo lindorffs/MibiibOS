@@ -3,7 +3,7 @@
 
 #include <mibstd.h>
 
-void tty_init();
+void tty_init(u_int fore, u_int back);
 
 void new_line();
 void add_entry(unsigned char entry);

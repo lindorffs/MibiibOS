@@ -3,16 +3,16 @@
 
 #include <mibstd.h>
 
-#ifndef TTY_H
-#include <tty.h>
-#endif
+#define MIN_BUFFER_SIZE 8
+#define MAX_BUFFER_SIZE 128
 
-#ifndef VGA_H
-#include <vga.h>
-#endif
+#define KERNEL_VERSION "1.0.0"
 
+char *malloc(int block_size);
+
+u_int in_byte(d_u_int port);
 void io_sleep(int);
 
-void *memset(void*, d_u_int, d_u_int);
+void panic(char *str);
 
 #endif

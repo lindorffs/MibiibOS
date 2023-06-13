@@ -1,4 +1,4 @@
-OBJECTS = tty.o vga.o os.o kernel.o boot.o keyboard.o 
+OBJECTS = test.o utils.o tty.o vga.o shell.o os.o memory.o kernel.o boot.o keyboard.o 
 BUILD_DIR := build/obj/
 
 main: clean os.bin
