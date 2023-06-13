@@ -6,7 +6,7 @@
 #define MIN_BUFFER_SIZE 8
 #define MAX_BUFFER_SIZE 128
 
-#define KERNEL_VERSION "1.0.0"
+#define KERNEL_VERSION "1.0.5"
 
 char *malloc(int block_size);
 
