@@ -14,6 +14,10 @@ void tty_init(u_int fore, u_int back) {
 	vga_clear_buffer(background_color);
 }
 
+void set_foreground(u_int fore) {
+	foreground_color = fore;
+}
+
 void new_line() {
 	tty_cursor = (tty_cursor / 80 + 1) * 80;
 }
@@ -24,6 +28,9 @@ void add_entry(unsigned const char entry) {
 		return;
 	}
 	vga_set_mem(tty_cursor++, vga_mem(entry, foreground_color, background_color));
+}
+void remove_entry(void) {
+	vga_set_mem(--tty_cursor, vga_mem(' ', foreground_color, background_color));
 }
 
 void add_string(const char *string) {
