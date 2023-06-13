@@ -1,9 +1,10 @@
 #include <keyboard.h>
 
 #include <kernel.h>
+#include <memory.h>
 #include <tty.h>
 
-char get_input_keycode() {
+char get_input_keycode(void) {
 	char ch = 0;
 	while ((ch = in_byte(KEYBOARD_PORT)) != 0) {
 		if (ch > 0) {
@@ -13,23 +14,31 @@ char get_input_keycode() {
 	return ch;
 }
 
-char *get_input() {
-	char *output = "";
-	int position = 0;
+void get_input(char *target, u_int max) {
+	char final[max];
+	u_int position = 0;
 	char ch = 0x0;
-	while (1 == 1) {
+	u_int running = 1;
+	while (running == 1) {
+		io_sleep(0x02ffff);
 		ch = get_input_keycode();
-		if (ch == KEY_ENTER) {
-			output[position] = '\0';
-			return output;
+		io_sleep(0x02ffff);
+		if (ch == KEY_ENTER || position == max) {
+			final[position] = '\0';
+			running = 0;
 		} else {
+			if (ch == KEY_BACKSPACE) {
+				final[--position] = '\0';
+				remove_entry();
+			}
 			ch = keycode_to_char(ch);
 			if (ch != NULL) {
-				output[position++] = ch;
 				add_entry(ch);
+				final[position++] = ch;
 			}
 		}
 	}
+	memcpy(target, (const char *) final, position,0);
 }
 
 char keycode_to_char(char keycode) {
@@ -88,6 +97,8 @@ char keycode_to_char(char keycode) {
 			return 'Z';
 		case KEY_SPACE:
 			return ' ';
+		case KEY_FORESLASH:
+			return '/';
 		default:
 			return NULL;
 	}

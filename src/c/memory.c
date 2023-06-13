@@ -8,11 +8,11 @@ void *memset(void *target, d_u_int value, int size) {
 	return target;
 }
 
-void *memcpy(void *target, const void *source, d_u_int size) {
+void *memcpy(void *target, const void *source, d_u_int size, d_u_int start) {
 	unsigned char *target_internal = (unsigned char *) target;
 	const unsigned char *source_internal = (unsigned char *) source;
 	for (d_u_int i = 0; i < size; i++) {
-		target_internal[i] = source_internal[i];
+		target_internal[i+start] = source_internal[i];
 	}
 	return target;
 }

@@ -25,15 +25,20 @@ void os_shell() {
 		get_input(input, 32);
 		if (streq(input, "/CLS") == 0) {
 			tty_init(GREEN, BLACK);
-		} else if (streq(input, "/TTLS") == 0) {
-			egg(songlol1);
-		} else if (streq(input, "/WUHIS") == 0) {
-			egg(songlol2);
-		} else if (streq(input, "/FULL") == 0) {
-			egg(songlol1);
-			egg(songlol1);
-			egg(songlol2);
-			egg(songlol1);
+		} else if (streq(input, "/PANIC") == 0) {
+			set_foreground(RED);
+			add_string(" <<< ");
+			memset(input, NULL, 32);
+			get_input(input, 32);
+			panic(input);
+		} else if (streq(input, "/ECHO") == 0) {
+			add_string(" <<< ");
+			memset(input, NULL, 32);
+			get_input(input, 32);
+			add_string("\n>>>");
+			add_string(input);
+		} else if (streq(input, "/STOP") == 0) {
+
 		}
 	}
 }
