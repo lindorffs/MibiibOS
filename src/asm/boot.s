@@ -32,6 +32,7 @@ stackTop:
 
 
 _start:
+
   # assign current stack pointer location to stackTop
 	mov $stackTop, %esp
 
