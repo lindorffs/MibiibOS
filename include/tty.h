@@ -6,7 +6,7 @@
 void tty_init(u_int fore, u_int back);
 
 void new_line();
-void add_entry(unsigned char entry);
-void add_string(char *string);
+void add_entry(unsigned const char entry);
+void add_string(const char *string);
 
 #endif

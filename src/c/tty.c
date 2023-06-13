@@ -18,11 +18,15 @@ void new_line() {
 	tty_cursor = (tty_cursor / 80 + 1) * 80;
 }
 
-void add_entry(unsigned char entry) {
+void add_entry(unsigned const char entry) {
+	if (entry == '\n') {
+		new_line();
+		return;
+	}
 	vga_set_mem(tty_cursor++, vga_mem(entry, foreground_color, background_color));
 }
 
-void add_string(char *string) {
+void add_string(const char *string) {
 	u_int i = 0;
 	char c = string[0];
 	while (c != '\0') {
