@@ -22,7 +22,6 @@ u_int in_byte(d_u_int port)
 {
   u_int ret;
   asm volatile("inb %1, %0" : "=a"(ret) : "d"(port));
-  io_sleep(0x2FFFF);
   return ret;
 }
 
@@ -48,7 +47,9 @@ void io_sleep(int timer_count)
 }
 
 void panic(char *str) {
+	vga_clear_buffer(BLACK);
 	tty_init(RED, BLACK);
+
 	add_string("[k] !!! PANIC RAISED !!!\n[o] !!! PANIC: ");
 	add_string(str);
 	add_string(" !!!\n");
@@ -59,13 +60,6 @@ void panic(char *str) {
 
 void kernel_entry()
 {
-  tty_init(GREEN, DARK_GREY);
-  add_string("[k] MibiibKern V1.0.0 -- Initializng\n");
-
-  add_string("[k] Exiting kSpace.\n");
-  io_sleep(0x02F);
-  os_entry();  
-  tty_init(WHITE, BLACK);
-  add_string("[k] Entering kSpace\n...");
-  return;
+  os_entry();
+  panic("ERROR");
 }

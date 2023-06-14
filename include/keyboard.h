@@ -50,7 +50,7 @@
 #define KEY_BACKSLASH 0x2B
 #define KEY_COMMA 0x33
 #define KEY_DOT 0x34
-#define KEY_FORESLHASH 0x35
+#define KEY_FORESLASH 0x35
 #define KEY_F1 0x3B
 #define KEY_F2 0x3C
 #define KEY_F3 0x3D
@@ -87,7 +87,7 @@
 
 char get_input_keycode(void);
 
-char *get_input(void);
+void get_input(char *, u_int max);
 
 char keycode_to_char(char);
 

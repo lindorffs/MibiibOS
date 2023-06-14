@@ -5,32 +5,52 @@
 #include <keyboard.h>
 #include <vga.h>
 #include <tty.h>
-#include <shell.h>
+#include <utils.h>
 
-#define OS_VERSION "1.0.0"
+const char *songlol1 = "\ntwinkle twinkle little star\ntwinkle twinkle little star\nhow I wonder what you are.\n";
+const char *songlol2 = "\nway up high\nin the sky\n";
 
-char *username;
+void egg(const char *in) {
+	for (u_int i = 0; i < strlen(in); i++) {
+		add_entry(in[i]);
+		io_sleep(0x02FFF8);
+	}	
+}
+
+void os_shell() {
+	while(1 == 1) {
+		add_string("\n>>> ");
+		char input[32];
+		memset(input, NULL, 32);
+		get_input(input, 32);
+		if (streq(input, "/CLS") == 0) {
+			tty_init(GREEN, BLACK);
+		} else if (streq(input, "/PANIC") == 0) {
+			set_foreground(RED);
+			add_string(" <<< ");
+			memset(input, NULL, 32);
+			get_input(input, 32);
+			panic(input);
+		} else if (streq(input, "/ECHO") == 0) {
+			add_string(" <<< ");
+			memset(input, NULL, 32);
+			get_input(input, 32);
+			add_string("\n>>>");
+			add_string(input);
+		} else if (streq(input, "/STOP") == 0) {
+			return;
+		}
+	}
+}
 
 void os_print(char *string) {
 	add_string(string);
 }
 
-char *os_get_user(void) {
-	return username;
-}
-
 void os_entry(void) {
-	io_sleep(0x0FFFFF);
+	tty_init(GREEN, BLACK);
+	os_print("[o] Hand off from kernel received!\n");
 
-	vga_clear_buffer(DARK_GREY);
-	tty_init(CYAN, DARK_GREY);
-	username = "";
-	io_sleep(0x02FFFF);
-
-	add_string("[o] Hand off from kernel received!\n");
-	add_string("Username: ");
-	username = get_input();
-
-	shell_hook();
-	return;
+	os_shell();
+	panic("UNHANDLED RETURN FROM SHELL!");
 }
