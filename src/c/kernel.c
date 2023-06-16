@@ -33,7 +33,7 @@ void out_byte(d_u_int port, u_int data)
 void wait_for_io(q_u_int timer_count)
 {
  	for (q_u_int i = 0; i < timer_count; i++) {
-		int a = 4^31;
+		int a = 2^31;
 		a = a + a;
 		asm volatile("nop");
 	}
@@ -41,13 +41,10 @@ void wait_for_io(q_u_int timer_count)
 
 void io_sleep(int timer_count)
 {
-	for (int i = 0; i < 1000; i++) {
-		wait_for_io(timer_count);
-	}
+	wait_for_io(timer_count * 1000);
 }
 
-void panic(char *str) {
-	vga_clear_buffer(BLACK);
+void panic(const char *str) {
 	tty_init(RED, BLACK);
 
 	add_string("[k] !!! PANIC RAISED !!!\n[o] !!! PANIC: ");
@@ -60,6 +57,10 @@ void panic(char *str) {
 
 void kernel_entry()
 {
-  os_entry();
+  tty_init(WHITE, BLACK);
+  if (memory_init() != 1) {
+	  panic("Memory Initialization Error");
+  }
+  os_init();
   panic("ERROR");
 }

@@ -50,10 +50,21 @@ u_int ctoi(const char c) {
 		}
 }
 
-const char *itobc(const u_int source) {
-	char *output = "";
-	for (int i = 7; i >= 0; i--) {
-		output[7 - i] = '1' ? (source >> i) && 1 == 1 : '0';
+void itoa(d_u_int number, char output[5]) {
+	int i = 0;
+
+	if (number == 0) {
+		output[i++] = '0';
 	}	
-	return (const char *)output;
+	while (number > 0) {
+		int remainder = number % 10;
+		number = number / 10;
+		output[i++] = remainder + '0';
+	}
+	output[i] = '\0';
+	for (int n = 0; n < i - 1; n++) {
+		char tmp = output[n];
+		output[n] = output[i-1-n];
+		output[i-1-n] = tmp;
+	}
 }

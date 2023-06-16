@@ -19,9 +19,7 @@
 # set the stack bottom 
 stackBottom:
 
-# define the maximum size of stack to 512 bytes
-.skip 1024
-
+.skip 4096
 
 # set the stack top which grows from higher to lower
 stackTop:
@@ -30,15 +28,13 @@ stackTop:
 .global _start
 .type _start, @function
 
-
 _start:
+	cli
   # assign current stack pointer location to stackTop
 	mov $stackTop, %esp
 
   # call the kernel main source
 	call kernel_entry
-
-	cli
 
 
 # put system in infinite loop

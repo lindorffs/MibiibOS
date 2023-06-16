@@ -5,33 +5,60 @@
 
 #define KEYBOARD_PORT 0x60
 
+#define KEY_A_P 0x1E
+#define KEY_B_P 0x30
+#define KEY_C_P 0x2E
+#define KEY_D_P 0x20
+#define KEY_E_P 0x12
+#define KEY_F_P 0x21
+#define KEY_G_P 0x22
+#define KEY_H_P 0x23
+#define KEY_I_P 0x17
+#define KEY_J_P 0x24
+#define KEY_K_P 0x25
+#define KEY_L_P 0x26
+#define KEY_M_P 0x32
+#define KEY_N_P 0x31
+#define KEY_O_P 0x18
+#define KEY_P_P 0x19
+#define KEY_Q_P 0x10
+#define KEY_R_P 0x13
+#define KEY_S_P 0x1F
+#define KEY_T_P 0x14
+#define KEY_U_P 0x16
+#define KEY_V_P 0x2F
+#define KEY_W_P 0x11
+#define KEY_X_P 0x2D
+#define KEY_Y_P 0x15
+#define KEY_Z_P 0x2C
 
-#define KEY_A 0x1E
-#define KEY_B 0x30
-#define KEY_C 0x2E
-#define KEY_D 0x20
-#define KEY_E 0x12
-#define KEY_F 0x21
-#define KEY_G 0x22
-#define KEY_H 0x23
-#define KEY_I 0x17
-#define KEY_J 0x24
-#define KEY_K 0x25
-#define KEY_L 0x26
-#define KEY_M 0x32
-#define KEY_N 0x31
-#define KEY_O 0x18
-#define KEY_P 0x19
-#define KEY_Q 0x10
-#define KEY_R 0x13
-#define KEY_S 0x1F
-#define KEY_T 0x14
-#define KEY_U 0x16
-#define KEY_V 0x2F
-#define KEY_W 0x11
-#define KEY_X 0x2D
-#define KEY_Y 0x15
-#define KEY_Z 0x2C
+#define KEY_A_R 0x9E 
+#define KEY_B_R 0xB0
+#define KEY_C_R 0xAE
+#define KEY_D_R 0xA0
+#define KEY_E_R 0x92
+#define KEY_F_R 0xA1
+#define KEY_G_R 0xA2
+#define KEY_H_R 0xA3
+#define KEY_I_R 0x97
+#define KEY_J_R 0xA4
+#define KEY_K_R 0xA5
+#define KEY_L_R 0xA6
+#define KEY_M_R 0xB2
+#define KEY_N_R 0xB1
+#define KEY_O_R 0x98
+#define KEY_P_R 0x99
+#define KEY_Q_R 0x90
+#define KEY_R_R 0x93
+#define KEY_S_R 0x9F
+#define KEY_T_R 0x94
+#define KEY_U_R 0x96
+#define KEY_V_R 0xAF
+#define KEY_W_R 0x91
+#define KEY_X_R 0xAD
+#define KEY_Y_R 0x95
+#define KEY_Z_R 0xAC
+
 #define KEY_1 0x02
 #define KEY_2 0x03
 #define KEY_3 0x04
@@ -87,8 +114,8 @@
 
 char get_input_keycode(void);
 
-void get_input(char *, u_int max);
+void get_input(char *, u_int max, int display);
 
-char keycode_to_char(char);
+char keycode_to_char(unsigned char, u_int);
 
 #endif

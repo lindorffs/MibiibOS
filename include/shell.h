@@ -1,8 +1,6 @@
-#ifndef SHELL_H
-#define SHELL_H
+#ifndef _SHELL_H
+#define _SHELL_H
 
-#define SHELL_VERSION "1.0.2"
-
-void shell_hook();
+void shell_loop();
 
 #endif

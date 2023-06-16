@@ -4,6 +4,7 @@
 #include <mibstd.h>
 
 void tty_init(u_int fore, u_int back);
+void tty_reinit(void);
 void set_foreground(u_int fore);
 
 void new_line(void);

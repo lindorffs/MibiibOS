@@ -18,8 +18,15 @@ void set_foreground(u_int fore) {
 	foreground_color = fore;
 }
 
+void tty_reinit() {
+	tty_init(foreground_color, background_color);
+}
+
 void new_line() {
 	tty_cursor = (tty_cursor / 80 + 1) * 80;
+	if ((tty_cursor / 80) >= 25) {
+		tty_reinit();
+	}
 }
 
 void add_entry(unsigned const char entry) {

@@ -1,10 +1,11 @@
-OBJECTS = test.o utils.o tty.o vga.o shell.o os.o memory.o kernel.o boot.o keyboard.o 
+OBJECTS = env.o mibview.o mibedit.o free.o echo.o shell.o utils.o tty.o vga.o os.o memory.o kernel.o boot.o keyboard.o 
 BUILD_DIR := build/obj/
 
 main: clean os.bin
 
 os.bin: $(OBJECTS) 
 	ld -m elf_i386 -T src/link.ld $^ -o build/os.bin -nostdlib
+
 
 %.o: src/asm/%.s
 	as --32 $^ -o $@
@@ -20,6 +21,7 @@ clean:
 	rm -fv build/MibiibOS.iso
 
 iso: main
+	mkdir -p /boot/grub
 	cp build/os.bin isodir/boot/mibiibos.bin
 	cp src/grub.cfg isodir/boot/grub/grub.cfg
 	grub-mkrescue -o build/MibiibOS.iso isodir

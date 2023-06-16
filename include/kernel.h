@@ -3,16 +3,14 @@
 
 #include <mibstd.h>
 
-#define MIN_BUFFER_SIZE 8
-#define MAX_BUFFER_SIZE 128
-
-#define KERNEL_VERSION "1.0.5"
-
-char *malloc(int block_size);
+#define KERNEL_MAJOR 1
+#define KERNEL_MINOR 5
+#define KERNEL_V 2
 
 u_int in_byte(d_u_int port);
+void out_byte(d_u_int port, u_int data);
 void io_sleep(int);
 
-void panic(char *str);
+void panic(const char *str);
 
 #endif
