@@ -4,15 +4,18 @@
 
 A BIOS Capable, kernel, operating system and shell designed as a basis for reserach into operating system and kernel development. Does a lot of things wrong. Probably all of them.
 
-Based on Pritam Zopes tutorial: https://www.codeproject.com/Articles/1225196/Create-Your-Own-Kernel-In-C-2
+Credit due to Pritam Zopes for introducing me to the world of Kernels.
 
-### Initial Boot:
+# Initial Boot:
 Kernel Initiailization
+
 Initial OS Boot (Username, Password, Hostname) (Note: Nothing needs to be entered. Blank values are accepted, and do not break things.)
+
 Login Screen (If no username or password is set, press enter when prompted for those fields.)
+
 Shell (See below.)
 
-### Available Commands:
+# Available Shell Commands:
 To see the availalbe programs, enter "/help" in the shell prompt.
 
 Available programs can be added by adding or changing the function pointers
