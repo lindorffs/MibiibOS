@@ -5,8 +5,8 @@
 #include <memory.h>
 
 #define OS_MAJOR 1
-#define OS_MINOR 5
-#define OS_V 2
+#define OS_MINOR 1
+#define OS_V 5
 
 typedef struct OSInfo {
 	char *hostname;
