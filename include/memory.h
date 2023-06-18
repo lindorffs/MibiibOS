@@ -4,6 +4,7 @@
 #include <mibstd.h>
 
 typedef struct memoryAllocationUnit {
+	char name[8];
 	void *data;
 	d_u_int size;
 	d_u_int start;
@@ -12,7 +13,7 @@ typedef struct memoryAllocationUnit {
 
 
 memoryAllocationUnit *get_allocation_by_id(u_int);
-void *malloc(d_u_int);
+void *malloc(d_u_int, char[8]);
 void *memset(void *, d_u_int, d_u_int);
 void *memcpy(void *, const void*, d_u_int, d_u_int);
 int memcmp(const void *, const void *, d_u_int);

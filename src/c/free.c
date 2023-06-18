@@ -22,7 +22,7 @@ void free_hook(void) {
 		itoa(i, number);
 		os_print(number);
 		os_print(": ");
-		os_print((char *)memoryUnits[i].data);
+		os_print(memoryUnits[i].name);
 		os_print("\n");
 	}
 }

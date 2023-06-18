@@ -14,6 +14,8 @@ OSInfo osData;
 #define USERNAME_LENGTH 8
 #define PASSWORD_LENGTH 8
 
+extern char *tty_buffer_a, *tty_buffer_b, *current_tty;
+
 char *motd = "MibiibOS - Lighter, Simpler, Easier.";
 
 void unreachable(void) {
@@ -22,7 +24,7 @@ void unreachable(void) {
 }
 
 
-void os_prtusr(void) {
+void os_prtuser(void) {
 	add_string(osData.username);
 }
 
@@ -35,12 +37,11 @@ void os_prthost(void) {
 // If the provided data matches, returns a 1.
 // If not, it returns a 0. It does not retry by itself.
 u_int os_auth() {
-	char in_user[USERNAME_LENGTH];
+char in_user[USERNAME_LENGTH];
 	memset(in_user, NULL, USERNAME_LENGTH);
 	char in_password[PASSWORD_LENGTH];
 	memset(in_password, NULL, PASSWORD_LENGTH);
 
-	new_line();
 	os_prthost();
 	add_string("/login [username] <<< ");
 	get_input(in_user, USERNAME_LENGTH, 1);
@@ -57,16 +58,20 @@ u_int os_auth() {
 // the motd is printed, a new line is printed,
 // and os_auth is called again.
 void os_lock() {
+	swap_tty();
+	tty_clear();
+	tty_init(YELLOW, BLACK);
+	os_print(motd);
+	new_line();
 	do {
-		tty_init(YELLOW, BLACK);
-		os_print(motd);
-		new_line();
 	}
 	while (os_auth() == 0);
+	tty_clear();
+	swap_tty();
 }
 
 void os_prthostinfo(void) {
-	os_prtusr();
+	os_prtuser();
 	add_string("@");
 	os_prthost();
 }
@@ -128,7 +133,6 @@ void os_loop(void) {
 void os_begin(void) {
 	tty_init(BLUE, WHITE);
 	os_print("OS_BEGIN Entry.\n");
-	add_string(motd);
 	new_line();
 	os_print("Gathering user information\n");
 	os_setusr();
@@ -136,6 +140,7 @@ void os_begin(void) {
 	os_sethost();
 
 	os_lock();
+	tty_clear();
 	os_loop();
 	
 	unreachable();
@@ -144,12 +149,18 @@ void os_begin(void) {
 
 void os_init(void) {
 	tty_init(BLUE, WHITE);
+	tty_clear();
 	os_print("OS_INIT Entry.");
 	new_line();
 	
-	osData.hostname = (char *)malloc(HOSTNAME_LENGTH);
-	osData.username = (char *)malloc(USERNAME_LENGTH);
-	osData.password = (char *)malloc(PASSWORD_LENGTH);
+	osData.hostname = (char *)malloc(HOSTNAME_LENGTH,"/etc/hs\0");
+	osData.username = (char *)malloc(USERNAME_LENGTH,"/etc/un\0");
+	osData.password = (char *)malloc(PASSWORD_LENGTH,"/etc/pw\0");
+	tty_buffer_a = (char *)malloc(2001,"/tty/ta\0");
+	tty_buffer_b = (char *)malloc(2001,"/tty/tb\0");
+	current_tty = tty_buffer_a;
+
+	tty_clear();
 
 	os_begin();
 	unreachable();

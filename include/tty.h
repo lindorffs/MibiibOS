@@ -5,6 +5,9 @@
 
 void tty_init(u_int fore, u_int back);
 void tty_reinit(void);
+void swap_tty(void);
+void tty_clear(void);
+void dump_buffer(void);
 void set_foreground(u_int fore);
 
 void new_line(void);

@@ -19,7 +19,7 @@ void editor_hook(void) {
 		itoa(i+1, number);
 		os_print(number);
 		os_print(": ");
-		os_print((char *) memoryUnits[i].data);
+		os_print(memoryUnits[i].name);
 		os_print("\n");
 	}
 	os_print("<<< ");
@@ -27,7 +27,9 @@ void editor_hook(void) {
 	get_input(input, 1, 1);
 	num_target = ctoi(input[0]) - 1;
 	tty_init(BLUE, WHITE);
-	os_print("~~~ MibEdit ~~~\n");
+	os_print("~~~ MibEdit ~~~ ");
+	os_print(memoryUnits[num_target].name);
+	os_print("\n");
 	get_input(memoryUnits[num_target].data, 127, 1);
 	tty_init(GREEN, BLACK);
 }

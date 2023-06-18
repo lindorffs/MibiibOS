@@ -2,7 +2,7 @@
 #include <kernel.h>
 #include <tty.h>
 
-#define MAX_MEMORY_SPACE 1024
+#define MAX_MEMORY_SPACE 4096
 unsigned char *memorySpace[MAX_MEMORY_SPACE];
 d_u_int last_assigned = 0;
 
@@ -18,7 +18,7 @@ void *memset(void *target, d_u_int value, d_u_int size) {
 	return target;
 }
 
-void *malloc(d_u_int size) {
+void *malloc(d_u_int size, char name[8]) {
 	if (last_assigned + size > MAX_MEMORY_SPACE) {
 		panic("MAX_MEMORY_SPACE reached!");
 	}
@@ -26,6 +26,7 @@ void *malloc(d_u_int size) {
 	last_assigned += size;
 
 	memoryAllocationUnit memoryUnit;
+	memcpy(&memoryUnit.name, name, 8, 0);
 	memoryUnit.data = assigned;
 	memoryUnit.size = size;
 	memoryUnit.start = last_assigned - size;

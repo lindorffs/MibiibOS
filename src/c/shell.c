@@ -15,6 +15,8 @@
 
 #define NUM_BUILTINS 10
 
+extern char *tty_buffer_a, *tty_buffer_b, *current_tty;
+
 const char *builtins[NUM_BUILTINS] = {"/lock", "/reinit", "/help", "/echo", "/free", "/edit", "/view", "/create", "/env", "/clear"};
 
 void shell_help() {
@@ -26,7 +28,11 @@ void shell_help() {
 }
 
 void mkfile(void) {
-	malloc(128);	
+	char filename[8] = "\0";
+	os_print("File Name <<< ");
+	get_input(filename, 8, 1);
+	malloc(128,filename);	
+	os_print("\n");
 }
 
 void (*builtins_func[NUM_BUILTINS]) (void) = {
@@ -58,8 +64,9 @@ int shell_parse(const char *input) {
 }
 
 void shell_prompt(void) {
-	os_prthost();
+	os_prtuser();
 	os_print("@");
+	os_prthost();
 	os_print(">>> ");
 }
 
@@ -68,6 +75,7 @@ void shell_prompt(void) {
 // returns 1, parsing has failed, and notify user.
 // If not, do nothing.
 void shell_loop() {
+	current_tty = tty_buffer_a;
 	tty_init(GREEN, BLACK);
 	char input[INPUT_BUFFER_SIZE];
 	while (1 == 1) {
