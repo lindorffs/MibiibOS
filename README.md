@@ -1,4 +1,4 @@
-# MibiibOS - V 1.5.2
+# MibiibOS - V 1.2.1
 ## A research kernel and quasi-operating system
 ### WARNING: DANGEROUS AT BEST.
 
