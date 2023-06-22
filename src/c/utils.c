@@ -1,5 +1,4 @@
 #include <utils.h>
-#include <memory.h>
 
 d_u_int strlen(const char *target) {
 	d_u_int length = 0;
