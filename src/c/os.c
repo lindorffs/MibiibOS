@@ -115,7 +115,7 @@ void tic_tac_toe(void) {
 	u_int turn = 0;
 	u_int last_turn = 0;
 	
-	char board[9] = {NULL, NULL, NULL, NULL,
+	unsigned char board[9] = {NULL, NULL, NULL, NULL,
 		NULL, NULL, NULL, NULL, NULL};
 
 	while (turn != 12) {
