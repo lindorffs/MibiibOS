@@ -17,7 +17,7 @@ void *memset(void *target, d_u_int value, d_u_int size) {
 	}
 	return target;
 }
-
+/**
 void *malloc(d_u_int size) {
 	if (last_assigned + size > MAX_MEMORY_SPACE) {
 		panic("MAX_MEMORY_SPACE reached!");
@@ -49,7 +49,7 @@ void *memcpy(void *target, const void *source, d_u_int size, d_u_int start) {
 	}
 	return target;
 }
-
+**/
 int memcmp(const void *target_a, const void *target_b, d_u_int size) {
 	const unsigned char *a_int = (const unsigned char *) target_a;
 	const unsigned char *b_int = (const unsigned char *) target_b;

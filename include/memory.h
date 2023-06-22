@@ -10,8 +10,6 @@ typedef struct memoryAllocationUnit {
 	d_u_int end;
 } memoryAllocationUnit;
 
-
-memoryAllocationUnit *get_allocation_by_id(u_int);
 void *malloc(d_u_int);
 void *memset(void *, d_u_int, d_u_int);
 void *memcpy(void *, const void*, d_u_int, d_u_int);

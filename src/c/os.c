@@ -1,157 +1,203 @@
 #include <os.h>
 
 #include <kernel.h>
-#include <memory.h>
 #include <keyboard.h>
 #include <vga.h>
 #include <tty.h>
 #include <utils.h>
-#include <shell.h>
 
-OSInfo osData;
+extern unsigned char osSpace[];
+extern unsigned char userSpace[];
 
-#define HOSTNAME_LENGTH 8 
-#define USERNAME_LENGTH 8
-#define PASSWORD_LENGTH 8
-
-char *motd = "MibiibOS - Lighter, Simpler, Easier.";
-
-void unreachable(void) {
-	while (1==1) {};
-	unreachable();
-}
-
-
-void os_prtusr(void) {
-	add_string(osData.username);
-}
-
-void os_prthost(void) {
-	add_string(osData.hostname);
-}
-
-
-// Prompts the user for a username and a password.
-// If the provided data matches, returns a 1.
-// If not, it returns a 0. It does not retry by itself.
-u_int os_auth() {
-	char in_user[USERNAME_LENGTH];
-	memset(in_user, NULL, USERNAME_LENGTH);
-	char in_password[PASSWORD_LENGTH];
-	memset(in_password, NULL, PASSWORD_LENGTH);
-
-	new_line();
-	os_prthost();
-	add_string("/login [username] <<< ");
-	get_input(in_user, USERNAME_LENGTH, 1);
-	add_string(" [password] <<< ");
-	get_input(in_password, PASSWORD_LENGTH, 0);
-	new_line();
-
-	return (streq(in_password, osData.password) == 0 && streq(in_user, osData.username) == 0);
-}
-
-// Locks the OS and waits for os_auth to return
-// if os_auth returns 0, os_lock finishes and
-// returns to caller. if not, the tty is cleared
-// the motd is printed, a new line is printed,
-// and os_auth is called again.
-void os_lock() {
-	do {
-		tty_init(YELLOW, BLACK);
-		os_print(motd);
-		new_line();
+void border(int x_start, int y_start, int width, int height) {
+	for (int y = y_start; y < y_start + height; y++) {
+		for (int x = x_start; x < x_start + width; x++) {
+			if (y == y_start || y == y_start + height - 1) {
+				put_at(x, y, '#');
+			} else if (x == x_start || x == x_start + width - 1) {
+				put_at(x, y, '#');
+			}
+		}
 	}
-	while (os_auth() == 0);
 }
-
-void os_prthostinfo(void) {
-	os_prtusr();
-	add_string("@");
-	os_prthost();
-}
-
-void os_print(const char *string) {
-	add_string(string);
-}
-
-
-void os_assert(int comparison, const char *good, const char *bad) {
-	if (comparison != 0) {
-		os_print(good);
-	} else {
-		panic(bad);
+void region(int x_start, int y_start, int width, int height) {
+	for (int y = y_start; y < y_start + height; y++) {
+		for (int x = x_start; x < x_start + width; x++) {
+			put_at(x, y, ' ');
+		}
 	}
 }
 
-void os_setusr(void) {
-	add_string("Set user information:");
-	new_line();
-	
-	char inputName[USERNAME_LENGTH];
-	memset(inputName, NULL, USERNAME_LENGTH);
-	add_string("Username: ");
-	get_input(inputName, USERNAME_LENGTH, 1);
-	memcpy(osData.username, inputName, USERNAME_LENGTH, 0);
-	memset(inputName, NULL, USERNAME_LENGTH);
-	new_line();
 
-	char inputPassword[PASSWORD_LENGTH];
-	memset(inputPassword, NULL, PASSWORD_LENGTH);
-	add_string("Password: ");
-	get_input(inputPassword, PASSWORD_LENGTH, 0);
-	memcpy(osData.password, inputPassword, PASSWORD_LENGTH, 0);
-	memset(inputPassword, NULL, PASSWORD_LENGTH);
-	new_line();
 
+extern void _stop(void);
+
+
+void os_get_input(char input[79]) {
+	set_tty_cursor(1, TTY_HEIGHT-2);
+	region(1, TTY_HEIGHT-2, TTY_WIDTH-2, 1);
+	get_input(input, 79);
 }
 
-//  Clears and sets the hostname
-void os_sethost(void) {
-	add_string("Hostname: ");
-	get_input(osData.hostname, HOSTNAME_LENGTH, 1);
-	new_line();
-}
-
-// Calls the shell loop, waits for return
-// and calls the os_loop again, thus creating the
-// infinite system loop.
-void os_loop(void) {
-	shell_loop();
-	os_loop();
-	unreachable();
-}
-
-// First start of OS, grab user name, password
-// hostname, create an inital lock, then drop
-// to the os_loop().
-void os_begin(void) {
+void os_ui(void) {
 	tty_init(BLUE, WHITE);
-	os_print("OS_BEGIN Entry.\n");
-	add_string(motd);
-	new_line();
-	os_print("Gathering user information\n");
-	os_setusr();
-	os_print("Gathering host information\n");
-	os_sethost();
+	border(0, 0, TTY_WIDTH, 3);
+	set_tty_cursor(1,1);
+	add_string("Version: ");
+	add_string(itoa(OS_MAJOR, (char*)NULL));
+	add_entry('.');
+	add_string(itoa(OS_MINOR, (char*)NULL));
+	add_entry('.');
+	add_string(itoa(OS_V, (char*)NULL));
+	add_entry(' ');
+	add_string(OS_VERSION);
 
-	os_lock();
-	os_loop();
-	
-	unreachable();
-	panic("OS_BEGIN PASSED UNREACHABLE");
+	put_string_at((TTY_WIDTH)/2 - (strlen("MibiibOS")/2), 1, "MibiibOS");
+
+	put_string_at((TTY_WIDTH)/2 - (strlen("Would you like to play a game?")/2), TTY_HEIGHT/2, "Would you like to play a game?");
+
+	border(0, TTY_HEIGHT-3, TTY_WIDTH, 3);
 }
+
+
+int shell_prompt(void) {
+	char input[79];
+	os_get_input(input);
+	if (streq(input, "/quit") == 0) {
+		return 0;
+	}
+	if (streq(input, "/run") == 0) {
+		put_string_at(1, 3, "Enter the following commands to run the described action.");
+		put_string_at(1, 4, "panic - triggers a panic");
+		put_string_at(1, 5, "shutdown - triggers a shutdown");
+		put_string_at(1, 6, "ttt - tic-tac-toe");
+		os_get_input(input);
+		if (streq(input, "panic") == 0) {
+			userSpace[0x101] = 'p';
+		} else if (streq(input, "shutdown") == 0) {
+			userSpace[0x101] = 's';
+		} else if (streq(input, "ttt")==0) {
+			userSpace[0x101] = 't';
+		}
+	}
+
+	return 1;
+}
+
+void render_board(u_int x, u_int y, unsigned char values[9]) {
+	u_int indexer = 0;
+	put_string_at(x,y-1," 1 2 3 ");
+	put_string_at(x-1,y+1,"1");
+	put_string_at(x-1,y+3,"2");
+	put_string_at(x-1,y+5,"3");
+	for (u_int y_internal = y; y_internal < y + 7; y_internal++) {
+		for (u_int x_internal = x; x_internal < x + 7; x_internal++) {
+			if (x_internal % 2 == 0) {
+			} else if (y_internal % 2 == 0) {
+			} else {
+				if (values[indexer] == NULL) {
+					put_at(x_internal, y_internal, '#');
+				} else {
+					put_at(x_internal, y_internal, values[indexer]);
+				}
+				indexer += 1;	
+			}
+		}
+	}
+}
+
+void tic_tac_toe(void) {
+	tty_init(GREEN, BLACK);
+	border(0, 0, TTY_WIDTH, 3);
+	
+	put_string_at((TTY_WIDTH)/2 - (strlen("TikTaks")/2), 1, "TikTaks");
+
+	u_int turn = 0;
+	u_int last_turn = 0;
+	
+	char board[9] = {NULL, NULL, NULL, NULL,
+		NULL, NULL, NULL, NULL, NULL};
+
+	while (turn != 12) {
+		char input[5];
+		render_board((TTY_WIDTH)/2-4, (TTY_HEIGHT)/2-4, board);
+		set_tty_cursor(1, TTY_HEIGHT-2);
+		if (last_turn != turn) {
+			region((TTY_WIDTH)/2-4, (TTY_HEIGHT)/2-7, 6, 1);
+			if (turn == 0) {
+				put_string_at((TTY_WIDTH)/2-4, (TTY_HEIGHT)/2-7, "X Goes");
+				last_turn = turn;
+			} else if (turn == 1) {
+				put_string_at((TTY_WIDTH)/2-4, (TTY_HEIGHT)/2-7, "O Goes");
+				last_turn = turn;
+			}
+		}
+
+		border(0, TTY_HEIGHT-3, TTY_WIDTH, 3);
+		region(1, TTY_HEIGHT-2, TTY_WIDTH-2, 1);
+		get_input(input, 5);
+		if (streq(input, "quit") == 0) {
+			turn = 12;
+		}
+		if (ctoi(input[0]) <= 3 && ctoi(input[2]) <= 3 && ctoi(input[0]) != 0 && ctoi(input[0]) != 0){
+			u_int y = ctoi(input[0]) - 1;
+			u_int x = ctoi(input[2]) - 1;
+			u_int t = x + y*3;
+			if (board[t] == NULL) {
+				switch (turn) {
+					case 0:
+						board[t] = 'X';
+						break;
+					case 1:
+						board[t] = 'O';
+						break;
+				}
+				last_turn = turn;
+				if (turn == 0) {
+					turn = 1;
+				} else {
+					turn = 0;
+				}
+			} else {
+				region((TTY_WIDTH)/2-4, (TTY_HEIGHT)/2-7, 6, 1);
+				put_string_at((TTY_WIDTH)/2-4, (TTY_HEIGHT)/2-7, "Occupy");
+			}
+		} else {
+			region((TTY_WIDTH)/2-4, (TTY_HEIGHT)/2-7, 6, 1);
+			put_string_at((TTY_WIDTH)/2-4, (TTY_HEIGHT)/2-7, "Not #");
+		}
+	}
+}
+	
 
 void os_init(void) {
-	tty_init(BLUE, WHITE);
-	os_print("OS_INIT Entry.");
-	new_line();
-	
-	osData.hostname = (char *)malloc(HOSTNAME_LENGTH);
-	osData.username = (char *)malloc(USERNAME_LENGTH);
-	osData.password = (char *)malloc(PASSWORD_LENGTH);
 
-	os_begin();
-	unreachable();
-	panic("OS_INIT PASSED UNREACHABLE");
+	os_ui();
+	while (shell_prompt()) {
+		os_ui();
+		if (userSpace[0x101] == 'p') {
+			put_string_at(1,3,"Panicing! Please enter 'now'");
+			char input[79];
+			os_get_input(input);
+			if (streq(input, "now") == 0) {
+				kernel_panic("!!!");
+			}
+			os_ui();
+			userSpace[0x101] = NULL;
+		} else if (userSpace[0x101] == 's') {
+			put_string_at(1,3,"Are you sure? [yes]");
+			char input[79];
+			os_get_input(input);
+			if(streq(input, "yes") == 0) {
+				_stop();
+			}
+			os_ui();
+			userSpace[0x101] = NULL;
+		} else if (userSpace[0x101] == 't') {
+			tic_tac_toe();
+			os_ui();
+			userSpace[0x101] = NULL;
+		}
+	}
+	_stop();
 }

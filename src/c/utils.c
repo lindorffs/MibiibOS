@@ -19,8 +19,24 @@ int streq(const char *source, const char *target) {
 	return 0;
 }
 
-void strsplit(const char *source, char *target, d_u_int index) {
-	memcpy(target, source, strlen(source) - index, index);	
+void *specialMemCpy(void *target, const char *source, size_int start, size_int stop) {
+	unsigned char *target_internal = (unsigned char*)target;
+	const unsigned char *source_internal = (const unsigned char*)source;
+	for (size_int i = start; i < stop && i < 0xFFFFFFFF; i++) {
+		target_internal[i] = source_internal[i];
+	}
+	return target;
+}
+
+void strsplit(const char *source, char *target_l, char* target_r, char split) {
+	for (size_int i = 0; i < strlen(source); i++) {
+		if (source[i] == split) {
+			specialMemCpy(target_l, source, 0, i);
+			specialMemCpy(target_r, source, i+1, strlen(source));
+		}
+	}
+	specialMemCpy(target_l, source, 0, strlen(source));	
+	specialMemCpy(target_r, source, 0, strlen(source));	
 }
 
 u_int ctoi(const char c) {
@@ -50,21 +66,29 @@ u_int ctoi(const char c) {
 		}
 }
 
-void itoa(d_u_int number, char output[5]) {
-	int i = 0;
+void reverse(char *str, d_u_int length) {
+	d_u_int start = 0;
+	d_u_int end = length - 1;
+	while (start < end) {
+		char temp = str[start];
+		str[start] = str[end];
+		str[end] = temp;
+		end--;
+		start++;
+	}
+}
 
+char *itoa(q_u_int number, char *output) {
+	int i = 0;
 	if (number == 0) {
 		output[i++] = '0';
 	}	
 	while (number > 0) {
-		int remainder = number % 10;
+		int remainder = number % (10);
 		number = number / 10;
 		output[i++] = remainder + '0';
 	}
+	reverse(output, i);
 	output[i] = '\0';
-	for (int n = 0; n < i - 1; n++) {
-		char tmp = output[n];
-		output[n] = output[i-1-n];
-		output[i-1-n] = tmp;
-	}
+	return output;
 }

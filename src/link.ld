@@ -3,8 +3,8 @@ ENTRY(_start)
 
 SECTIONS
 {
-	/* we need 1MB of space atleast */
-	. = 1M;
+	/* we need 2MB of space atleast */
+	. = 8M;
 
   	/* text section */
 	.text BLOCK(4K) : ALIGN(4K)
@@ -33,4 +33,3 @@ SECTIONS
 	}
 
 }
-

@@ -9,7 +9,7 @@ typedef unsigned short d_u_int;		// double unsigned integer 	# 16bit
 typedef unsigned long q_u_int;		// quadruple unsigned integer	# 32bit
 
 #define SIZE_INT_SIZE D_U_INT_SIZE
-typedef d_u_int size_int;
+typedef q_u_int size_int;
 
 #define NULL 0
 

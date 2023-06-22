@@ -24,7 +24,7 @@ void vga_set_mem(q_u_int mem_pos, d_u_int vga_memory) {
 
 void vga_clear_buffer(u_int color)
 {
-  for(q_u_int i = 0; i < VGA_BUFFER_SIZE; i++){
+  for(d_u_int i = 0; i < VGA_BUFFER_SIZE; i++){
 	  vga_set_mem(i, vga_mem(NULL, WHITE, color)); 
   }
 }

@@ -2,11 +2,11 @@
 #define OS_H_
 
 #include <mibstd.h>
-#include <memory.h>
 
 #define OS_MAJOR 1
 #define OS_MINOR 1
-#define OS_V 5
+#define OS_V 6
+#define OS_VERSION "Klapper"
 
 typedef struct OSInfo {
 	char *hostname;

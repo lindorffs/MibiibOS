@@ -31,6 +31,10 @@
 #define KEY_X_P 0x2D
 #define KEY_Y_P 0x15
 #define KEY_Z_P 0x2C
+#define KEY_LS_P 0x2A
+#define KEY_RS_P 0x36
+
+#define KEY_PRESS_MAX 0x58
 
 #define KEY_A_R 0x9E 
 #define KEY_B_R 0xB0
@@ -58,6 +62,10 @@
 #define KEY_X_R 0xAD
 #define KEY_Y_R 0x95
 #define KEY_Z_R 0xAC
+#define KEY_LS_R 0xAA
+#define KEY_RS_R 0xB6
+
+#define KEY_SHIFT_FLAGS KEY_RS_R + KEY_LS_R + KEY_LS_P + KEY_RS_P
 
 #define KEY_1 0x02
 #define KEY_2 0x03
@@ -112,10 +120,20 @@
 #define KEY_TAB 0x0F
 #define KEY_UP 0x48
 
+typedef struct KeyEvent {
+	u_int flags;
+#define KEY_PRESSED 0b1
+#define KEY_RELEASED 0b10
+	u_int keycode;
+	char ascii;
+} KeyEvent;
+
 char get_input_keycode(void);
 
-void get_input(char *, u_int max, int display);
+KeyEvent get_key_event(void);
 
-char keycode_to_char(unsigned char, u_int);
+void get_input(char *, d_u_int);
+
+char keycode_to_char(unsigned char);
 
 #endif

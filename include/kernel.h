@@ -5,12 +5,14 @@
 
 #define KERNEL_MAJOR 1
 #define KERNEL_MINOR 1
-#define KERNEL_V 5
+#define KERNEL_VERSION 6 
+#define KERNEL_STRING "Leapure"
 
-u_int in_byte(d_u_int port);
-void out_byte(d_u_int port, u_int data);
-void io_sleep(int);
+#define sizeof(type) (size_int)((char *)(&type+1)-(char*)(&type))
 
-void panic(const char *str);
-
+u_int kernel_in_byte(d_u_int port);
+void kernel_out_byte(d_u_int port, u_int data);
+void kernel_io_sleep(size_int);
+void kernel_panic(const char *str);
+void *memcpy(void *target, const void *source, size_int size);
 #endif
