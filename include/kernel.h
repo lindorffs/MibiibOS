@@ -3,9 +3,9 @@
 
 #include <mibstd.h>
 
-#define KERNEL_MAJOR 1
+#define KERNEL_MAJOR 2
 #define KERNEL_MINOR 1
-#define KERNEL_VERSION 6 
+#define KERNEL_VERSION 1 
 #define KERNEL_STRING "Leapure"
 
 #define sizeof(type) (size_int)((char *)(&type+1)-(char*)(&type))
