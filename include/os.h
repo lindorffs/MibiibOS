@@ -5,8 +5,8 @@
 
 #define OS_MAJOR 2
 #define OS_MINOR 1
-#define OS_V 1
-#define OS_VERSION "Klapper"
+#define OS_V 2 
+#define OS_VERSION "Dragur"
 
 typedef struct OSInfo {
 	char *hostname;

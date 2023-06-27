@@ -52,10 +52,14 @@ void kernel_io_sleep(size_int timer_count)
 	kernel_wait_for_io(timer_count * 1000);
 }
 
+void call_stop(void);
+
 void call_kset() {
-	if(streq((char*)&osSpace[0x100], "mem") == 0) {
-		kernel_panic("mem");
-	}	
+	if(osSpace[0x100] == 'p') {
+		kernel_panic("!!!");
+	} else if (osSpace[0x100] == 's') {
+		call_stop();
+	}
 }
 
 void kernel_panic(const char *str) {
@@ -78,7 +82,8 @@ void *memcpy(void *target, const void *source, size_int size) {
 	return target;
 }
 
-char *runString = "... SYSTEM INITIALIZED... PRESS ANY KEY TO BEGIN.";
+char *runString = "... SYSTEM INITIALIZED ... PRESS ANY KEY TO BEGIN.";
+char *stopString = "... SYSTEM CLEARED ... PRESS ANY KEY TO SHUTDOWN.";
 
 void userSpace_init() {
 	add_string("User Space Size (Bytes): ");
@@ -182,6 +187,15 @@ void kernel_init() {
 		}
 	}
 	add_entry('\n');
+}
+
+void call_stop(void) {
+	kernel_init();
+	userSpace_init();
+	osSpace_init();
+	add_string(stopString);
+	get_input((void*)NULL, 1);
+	_stop();
 }
 
 void kernel_entry()

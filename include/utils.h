@@ -9,5 +9,6 @@ void strsplit(const char *, char *, char *, char);
 u_int ctoi(const char);
 void itos(char *str, int i);
 char* itoa(q_u_int, char*);
+q_u_int atoi(char*);
 
 #endif

@@ -91,3 +91,13 @@ char *itoa(q_u_int number, char *output) {
 	output[i] = '\0';
 	return output;
 }
+
+q_u_int atoi(char *str) {
+	q_u_int res = 0;
+
+	for (size_int i = 0; str[i] != '\0'; ++i) {
+		res = res * 10 + str[i] - '0';
+	}
+
+	return res;
+}

@@ -91,3 +91,24 @@ void add_string(const char *string) {
 		c = string[i];
 	}
 }
+
+
+void border(u_int x_start, u_int y_start, u_int width, u_int height) {
+        for (u_int y = y_start; y < y_start + height; y++) {
+                for (u_int x = x_start; x < x_start + width; x++) {
+                        if (y == y_start || y == y_start + height - 1) {
+                                put_at(x, y, '#');
+                        } else if (x == x_start || x == x_start + width - 1) {
+                                put_at(x, y, '#');
+                        }
+                }
+        }
+}
+void region(u_int x_start, u_int y_start, u_int width, u_int height) {
+        for (u_int y = y_start; y < y_start + height; y++) {
+                for (u_int x = x_start; x < x_start + width; x++) {
+                        put_at(x, y, ' ');
+                }
+        }
+}
+

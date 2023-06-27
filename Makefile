@@ -1,6 +1,6 @@
 BUILD_DIR := build/obj/
 #OBJECTS = env.o mibview.o mibedit.o free.o echo.o shell.o utils.o tty.o vga.o os.o memory.o kernel.o boot.o keyboard.o 
-OBJECTS = os.o utils.o keyboard.o tty.o vga.o kernel.o boot.o 
+OBJECTS = uimanager.o ttt.o ui.o os.o utils.o keyboard.o tty.o vga.o kernel.o boot.o 
 
 main: clean os.bin
 
