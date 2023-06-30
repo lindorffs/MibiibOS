@@ -1,18 +1,14 @@
-/* entry point of our kernel */
-ENTRY(_start)
+/* entry point of our bootloader */
+ENTRY(_boot_main)
 
 SECTIONS
 {
-	/* we need 2MB of space atleast */
-	. = 8M;
-
   	/* text section */
 	.text BLOCK(4K) : ALIGN(4K)
 	{
 		*(.multiboot)
 		*(.text)
 	}
-
 	/* read only data section */
 	.rodata BLOCK(4K) : ALIGN(4K)
 	{

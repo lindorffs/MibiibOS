@@ -20,8 +20,6 @@
 **/
 
 #define MB 1000
-extern char *stackBottom;
-extern char *stackTop;
 extern int tty_x, tty_y;
 unsigned char kernelSpace[10 * MB];
 unsigned char osSpace[20 * MB];
@@ -145,6 +143,7 @@ void osSpace_init() {
 	
 
 void kernel_init() {
+
 	tty_init(WHITE, BLACK); // vga_clear
  
 	add_string("Kernel: ");
@@ -157,15 +156,6 @@ void kernel_init() {
         add_string(KERNEL_STRING);
 	add_entry('\n');
 
-	add_string("Stack Top [Byte]: ");
-	add_string(itoa((int)&stackTop, (void*)NULL));
-	add_entry('\n');
-	add_string("Stack Bottom [Byte]: ");
-	add_string(itoa((int)&stackBottom, (void*)NULL));
-	add_entry('\n');
-	add_string("Stack Size: ");
-	add_string(itoa((int)&stackTop - (int)&stackBottom, (void*)NULL));
-	add_entry('\n');
 	add_string("Kernel Space Size (MiBytes): ");
 	add_string(itoa(sizeof(kernelSpace), (void*)NULL));
 	add_entry('\n');
@@ -201,7 +191,6 @@ void call_stop(void) {
 void kernel_entry()
 {
 	get_input((void*)NULL, 1);
-
 	kernel_init();
 	osSpace_init();
 	userSpace_init();
