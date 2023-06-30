@@ -1,4 +1,5 @@
 #include <vga.h>
+#include <kernel.h>
 
 d_u_int *vga_buffer = (d_u_int*)0xB8000;
 
@@ -24,8 +25,24 @@ void vga_set_mem(q_u_int mem_pos, d_u_int vga_memory) {
 
 void vga_clear_buffer(u_int color)
 {
-  for(d_u_int i = 0; i < VGA_BUFFER_SIZE; i++){
-	  vga_set_mem(i, vga_mem(NULL, WHITE, color)); 
-  }
 }
 
+void enable_vga_cursor() {
+	kernel_out_byte(0x3D4, 0x0A);
+	kernel_out_byte(0x3D5, (kernel_in_byte(0x3D5) & 0xC0) | 0);
+	kernel_out_byte(0x3D4, 0x0B);
+	kernel_out_byte(0x3D5, (kernel_in_byte(0x3D5) & 0xE0) | 15);
+}
+
+void disable_vga_cursor() {
+	kernel_out_byte(0x3D4, 0x0A);
+	kernel_out_byte(0x3D5, 0x20);
+}
+
+void set_vga_cursor(u_int x, u_int y) {
+	d_u_int pos = (y * VGA_WIDTH) + x;
+	kernel_out_byte(0x3D4, 0x0F);
+	kernel_out_byte(0x3D5, (pos & 0xFF));
+	kernel_out_byte(0x3D4, 0x0E);
+	kernel_out_byte(0x3D5, ((pos >> 8) & 0xFF));
+}

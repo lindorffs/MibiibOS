@@ -27,6 +27,16 @@ void *specialMemCpy(void *target, const char *source, size_int start, size_int s
 	return target;
 }
 
+void *memcpy(void *target, const void *source, size_int size) { 
+        unsigned char *target_internal = (unsigned char *)target; 
+        const unsigned char *source_internal = (unsigned char *) source; 
+        for (size_int i = 0; i < size && i < 0xFFFFFFFF; i++) { 
+                target_internal[i] = source_internal[i]; 
+        } 
+        return target; 
+}
+
+
 void strsplit(const char *source, char *target_l, char* target_r, char split) {
 	for (size_int i = 0; i < strlen(source); i++) {
 		if (source[i] == split) {

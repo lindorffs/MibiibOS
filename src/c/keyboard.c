@@ -3,6 +3,7 @@
 #include <kernel.h>
 
 #include <tty.h>
+#include <vga.h>
 
 u_int shift = 0;
 char last_code = NULL;
@@ -25,18 +26,9 @@ KeyEvent new_key_event(u_int key_code) {
 	else if (key_code <= KEY_PRESS_MAX) {
 		event.flags = KEY_PRESSED;
 		event.ascii = keycode_to_char(key_code); 
-		if (event.keycode == KEY_LS_P || event.keycode == KEY_RS_P) {
-			if (shift == 1) {
-				event.keycode = event.keycode;
-			}
-			shift = 1;
-		}
 	} else {
 		event.flags = KEY_RELEASED;
 		event.ascii = keycode_to_char(key_code - 128);
-		if (event.keycode == KEY_LS_R || event.keycode == KEY_RS_R) {
-			shift = 0;
-		}
 	}
 	return event;
 }
@@ -51,6 +43,7 @@ void get_input(char *target, d_u_int size) {
 	u_int running = 1;
 	KeyEvent keyPress;
 	do {
+		set_vga_cursor(get_tty_cursor_x(), get_tty_cursor_y());
 		keyPress = get_key_event();
 		if (keyPress.keycode == 0x1C + 128) {
 			target[position] = '\0';

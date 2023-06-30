@@ -6,22 +6,31 @@ q_u_int tty_cursor;
 u_int foreground_color;
 u_int background_color;
 
-int tty_x = 0, tty_y = 0;
+u_int tty_x = 0, tty_y = 0;
 
 q_u_int tty_cursor_to_address() {
 	return (tty_y * 80) + tty_x;
 }
 
+u_int get_tty_cursor_x() {
+	return tty_x;
+}
+
+u_int get_tty_cursor_y() {
+	return tty_y;
+}
+
 void set_tty_cursor(u_int x, u_int y) {
+/**
+	if (y > TTY_HEIGHT) {
+		y = 0;
+		x = x;
+	}
 	if (x > TTY_WIDTH) {
 		x = 0;
 		y += 1;
 	}
-	if (y > TTY_HEIGHT) {
-		y = 0;
-		x = 0;
-		tty_init(foreground_color, background_color);
-	}
+**/
 	tty_x = x;
 	tty_y = y;
 }

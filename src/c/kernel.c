@@ -4,6 +4,7 @@
 #include <keyboard.h>
 #include <utils.h>
 #include <os.h>
+#include <ui.h>
 /**
 #include <memory.h>
 #include <mibstd.h>
@@ -21,19 +22,17 @@
 
 #define MB 1000
 extern int tty_x, tty_y;
-unsigned char kernelSpace[10 * MB];
-unsigned char osSpace[20 * MB];
-unsigned char userSpace[30 * MB];
+extern struct Window osWin;
 
 u_int kernel_in_byte(d_u_int port)
 {
   u_int ret;
-  asm volatile("inb %1, %0" : "=a"(ret) : "d"(port));
+  asm volatile("inb %1, %0" : "=a"(ret) : "Nd"(port));
   return ret;
 }
 void kernel_out_byte(d_u_int port, u_int data)
 {
-  asm volatile("outb %0, %1" : "=a"(data) : "d"(port));
+  asm volatile("outb %0, %1":: "a"(data),  "Nd"(port));
 }
 
 void kernel_wait_for_io(size_int timer_count)
@@ -50,15 +49,6 @@ void kernel_io_sleep(size_int timer_count)
 	kernel_wait_for_io(timer_count * 1000);
 }
 
-void call_stop(void);
-
-void call_kset() {
-	if(osSpace[0x100] == 'p') {
-		kernel_panic("!!!");
-	} else if (osSpace[0x100] == 's') {
-		call_stop();
-	}
-}
 
 void kernel_panic(const char *str) {
 	tty_init(RED, BLACK);
@@ -71,129 +61,11 @@ void kernel_panic(const char *str) {
 	}
 }
 
-void *memcpy(void *target, const void *source, size_int size) {
-	unsigned char *target_internal = (unsigned char *)target;
-	const unsigned char *source_internal = (unsigned char *) source;
-	for (size_int i = 0; i < size && i < 0xFFFFFFFF; i++) {
-		target_internal[i] = source_internal[i];
-	}
-	return target;
-}
-
 char *runString = "... SYSTEM INITIALIZED ... PRESS ANY KEY TO BEGIN.";
 char *stopString = "... SYSTEM CLEARED ... PRESS ANY KEY TO SHUTDOWN.";
-
-void userSpace_init() {
-	add_string("User Space Size (Bytes): ");
-	add_string(itoa(sizeof(userSpace), (void*)NULL));
-	add_entry('\n');
-	add_string("User Space Start [Byte]: ");
-	add_string(itoa((int)&userSpace, (void*)NULL));
-	add_entry('\n');
-	add_string("Clearing User Space\n");
-	for (size_int i = 0; i < sizeof(userSpace); i++) {
-		userSpace[i] = NULL;
-	}
-	add_string("Checking User Space\n");
-	for (size_int i = 0; i < sizeof(userSpace); i += 10) {
-		if (userSpace[i] == 8) {
-			userSpace[i] = NULL;
-			if (i % MB == 0) {
-				add_entry('.');
-			}
-			if (i + 10 < sizeof(userSpace)) {
-				userSpace[i + 10] = 8;
-			}
-		} else {
-			userSpace[i] = 8;
-			i -= 10;
-		}
-	}
-	add_entry('\n');
-}
-
-void osSpace_init() {
-	add_string("OS Space Size (Bytes): ");
-	add_string(itoa(sizeof(osSpace), (void*)NULL));
-	add_entry('\n');
-	add_string("OS Space Start [Byte]: ");
-	add_string(itoa((int)&osSpace, (void*)NULL));
-	add_entry('\n');
-	add_string("Clearing OS Space\n");
-	for (size_int i = 0; i < sizeof(osSpace); i++) {
-		osSpace[i] = NULL;
-	}
-	add_string("Checking OS Space\n");
-	for (size_int i = 0; i < sizeof(osSpace); i += 10) {
-		if (osSpace[i] == 8) {
-			osSpace[i] = NULL;
-			if (i % MB == 0) {
-				add_entry('.');
-			}
-			if (i + 10 < sizeof(osSpace)) {
-				osSpace[i + 10] = 8;
-			}
-		} else {
-			osSpace[i] = 8;
-			i -= 10;
-		}
-	}
-	add_entry('\n');
-}
-	
-
-void kernel_init() {
-
-	tty_init(WHITE, BLACK); // vga_clear
- 
-	add_string("Kernel: ");
-	add_string(itoa(KERNEL_MAJOR, (void*)NULL));
-	add_entry('.');
-	add_string(itoa(KERNEL_MINOR, (void*)NULL));
-	add_entry('.');
-	add_string(itoa(KERNEL_VERSION, (void*)NULL));
-	add_string(" - ");
-        add_string(KERNEL_STRING);
-	add_entry('\n');
-
-	add_string("Kernel Space Size (MiBytes): ");
-	add_string(itoa(sizeof(kernelSpace), (void*)NULL));
-	add_entry('\n');
-	add_string("Kernel Space Start [Byte]: ");
-	add_string(itoa((int)&kernelSpace, (void*)NULL));
-	add_entry('\n');
-	add_string("Clearing Kernel Space\n");
-	for (size_int i = 0; i < sizeof(kernelSpace); i++) {
-		kernelSpace[i] = NULL;
-	}
-	add_string("Checking Kernel Space\n");
-	for (size_int i = 0; i < sizeof(kernelSpace); i += 10) {
-		if (kernelSpace[i] == NULL) {
-			if (i % MB == 0) {
-				add_entry('.');
-			}
-		} else {
-			add_entry('!');
-		}
-	}
-	add_entry('\n');
-}
-
-void call_stop(void) {
-	kernel_init();
-	userSpace_init();
-	osSpace_init();
-	add_string(stopString);
-	get_input((void*)NULL, 1);
-	_stop();
-}
-
 void kernel_entry()
 {
-	get_input((void*)NULL, 1);
-	kernel_init();
-	osSpace_init();
-	userSpace_init();
+	disable_vga_cursor();
 	add_string(runString);
 	get_input((void*)NULL, 1);
 	os_init();

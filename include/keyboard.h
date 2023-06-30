@@ -108,7 +108,7 @@
 #define KEY_INSERT 0x52
 #define KEY_KEYPAD_5 0x4C
 #define KEY_KEYPAD_MUL 0x37
-#define KEY_KEYPAD_Minus 0x4A
+#define KEY_KEYPAD_MINUS 0x4A
 #define KEY_KEYPAD_PLUS 0x4E
 #define KEY_KEYPAD_DIV 0x35
 #define KEY_LEFT 0x4B
